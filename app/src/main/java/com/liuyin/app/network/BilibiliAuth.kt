@@ -1,6 +1,7 @@
 package com.liuyin.app.network
 
 import java.security.MessageDigest
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,5 +36,12 @@ class BilibiliAuth @Inject constructor() {
         val digest = MessageDigest.getInstance("MD5")
         return digest.digest(input.toByteArray())
             .joinToString("") { "%02x".format(it) }
+    }
+
+    companion object {
+        fun generateBuvid3(): String {
+            val uuid = UUID.randomUUID().toString().uppercase()
+            return "${uuid}infoc"
+        }
     }
 }

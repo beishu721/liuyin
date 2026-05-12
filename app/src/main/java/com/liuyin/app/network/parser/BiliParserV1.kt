@@ -67,17 +67,17 @@ class BiliParserV1 @Inject constructor(
         if (auth.isReady) return
         Timber.d("Fetching WBI keys")
         val response = api.getWbiIndex()
-        if (response.code != 0 || response.data?.wbiImg == null) {
-            Timber.w("Failed to fetch WBI keys, continuing without signing")
-            return
+        if (response.data?.wbiImg == null) {
+            throw ParserException("WBI密钥获取失败：响应中无wbi_img")
         }
         val img = response.data.wbiImg
         val imgKey = extractKey(img.imgUrl)
         val subKey = extractKey(img.subUrl)
-        if (imgKey != null && subKey != null) {
-            auth.updateKeys(imgKey, subKey)
-            Timber.d("WBI keys updated")
+        if (imgKey == null || subKey == null) {
+            throw ParserException("WBI密钥提取失败 [imgUrl=${img.imgUrl}, subUrl=${img.subUrl}]")
         }
+        auth.updateKeys(imgKey, subKey)
+        Timber.d("WBI keys updated: imgKey=${imgKey.take(8)}..., subKey=${subKey.take(8)}...")
     }
 
     /**

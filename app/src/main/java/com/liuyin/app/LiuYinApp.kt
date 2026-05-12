@@ -32,10 +32,10 @@ class LiuYinApp : Application() {
         scope.launch {
             try {
                 val response = api.getWbiIndex()
-                if (response.code == 0 && response.data?.wbiImg != null) {
-                    val img = response.data.wbiImg
-                    val imgKey = img.imgUrl.substringAfterLast("/").substringBefore(".")
-                    val subKey = img.subUrl.substringAfterLast("/").substringBefore(".")
+                val wbiImg = response.data?.wbiImg
+                if (wbiImg != null) {
+                    val imgKey = wbiImg.imgUrl.substringAfterLast("/").substringBefore(".")
+                    val subKey = wbiImg.subUrl.substringAfterLast("/").substringBefore(".")
                     auth.updateKeys(imgKey, subKey)
                     Timber.d("WBI keys initialized on startup")
                 }
